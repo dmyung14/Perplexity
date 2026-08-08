@@ -1,1 +1,86 @@
 @import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: #191a1a;
+  --foreground: #e8e6e3;
+  --card: #202222;
+  --card-foreground: #e8e6e3;
+  --popover: #202222;
+  --popover-foreground: #e8e6e3;
+  --primary: #20808d;
+  --primary-foreground: #ffffff;
+  --secondary: #2a2c2c;
+  --secondary-foreground: #e8e6e3;
+  --muted: #262828;
+  --muted-foreground: #9a9c9c;
+  --accent: #2a2c2c;
+  --accent-foreground: #e8e6e3;
+  --destructive: #e35555;
+  --border: #333535;
+  --input: #333535;
+  --ring: #20808d;
+  --radius: 0.625rem;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.markdown-answer :is(h1, h2, h3) {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.markdown-answer p {
+  margin-bottom: 0.75em;
+  line-height: 1.7;
+}
+
+.markdown-answer ul,
+.markdown-answer ol {
+  margin-bottom: 0.75em;
+  padding-left: 1.5em;
+}
+
+.markdown-answer li {
+  margin-bottom: 0.25em;
+}
+
+.markdown-answer a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.markdown-answer code {
+  background-color: var(--muted);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
