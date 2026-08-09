@@ -8,14 +8,21 @@ import { FollowUpChips } from "./FollowUpChips"
 export function AnswerThread({
   exchanges,
   onFollowUp,
+  anyStreaming,
 }: {
   exchanges: Exchange[]
   onFollowUp: (question: string) => void
+  anyStreaming: boolean
 }) {
   return (
     <div className="flex flex-col gap-10">
       {exchanges.map((exchange) => (
-        <ExchangeView key={exchange.id} exchange={exchange} onFollowUp={onFollowUp} />
+        <ExchangeView
+          key={exchange.id}
+          exchange={exchange}
+          onFollowUp={onFollowUp}
+          anyStreaming={anyStreaming}
+        />
       ))}
     </div>
   )
@@ -24,9 +31,11 @@ export function AnswerThread({
 function ExchangeView({
   exchange,
   onFollowUp,
+  anyStreaming,
 }: {
   exchange: Exchange
   onFollowUp: (question: string) => void
+  anyStreaming: boolean
 }) {
   const [tab, setTab] = useState<Tab>("answer")
 
@@ -56,7 +65,7 @@ function ExchangeView({
         </div>
       )}
 
-      {!exchange.streaming && !exchange.error && (
+      {!anyStreaming && !exchange.error && (
         <FollowUpChips questions={exchange.followUps} onSelect={onFollowUp} />
       )}
     </div>

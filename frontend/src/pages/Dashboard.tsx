@@ -37,9 +37,24 @@ export default function Dashboard() {
   }
 
   async function handleSelectConversation(conversationId: string) {
-    const conversation = await getConversation(conversationId)
-    setActiveConversationId(conversation.id)
-    setExchanges(pairMessagesIntoExchanges(conversation.messages))
+    try {
+      const conversation = await getConversation(conversationId)
+      setActiveConversationId(conversation.id)
+      setExchanges(pairMessagesIntoExchanges(conversation.messages))
+    } catch {
+      setActiveConversationId(null)
+      setExchanges([
+        {
+          id: crypto.randomUUID(),
+          query: "",
+          answerText: "",
+          followUps: [],
+          sources: [],
+          streaming: false,
+          error: "Conversation not found",
+        },
+      ])
+    }
   }
 
   async function runExchange(query: string) {
@@ -96,6 +111,8 @@ export default function Dashboard() {
     )
   }
 
+  const anyStreaming = exchanges.some((exchange) => exchange.streaming)
+
   return (
     <div className="flex h-screen bg-background text-foreground">
       <Sidebar
@@ -120,11 +137,11 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-10">
-            <AnswerThread exchanges={exchanges} onFollowUp={runExchange} />
+            <AnswerThread exchanges={exchanges} onFollowUp={runExchange} anyStreaming={anyStreaming} />
             <div className="sticky bottom-6">
               <AskBar
                 onSubmit={runExchange}
-                disabled={exchanges.some((exchange) => exchange.streaming)}
+                disabled={anyStreaming}
                 placeholder="Ask a follow-up..."
               />
             </div>
@@ -137,19 +154,28 @@ export default function Dashboard() {
 
 function pairMessagesIntoExchanges(messages: MessageRecord[]): Exchange[] {
   const exchanges: Exchange[] = []
-  for (let i = 0; i < messages.length; i += 2) {
-    const userMessage = messages[i]
-    const assistantMessage = messages[i + 1]
-    if (!userMessage) continue
-    exchanges.push({
-      id: crypto.randomUUID(),
-      query: userMessage.content,
-      answerText: assistantMessage?.content ?? "",
-      followUps: [],
-      sources: [],
-      streaming: false,
-      error: null,
-    })
+
+  for (const message of messages) {
+    if (message.role === "User") {
+      exchanges.push({
+        id: crypto.randomUUID(),
+        query: message.content,
+        answerText: "",
+        followUps: [],
+        sources: [],
+        streaming: false,
+        error: null,
+      })
+    } else if (message.role === "Assistant") {
+      const currentExchange = exchanges[exchanges.length - 1]
+      if (!currentExchange) continue
+
+      const parsed = new AnswerStreamParser().push(message.content)
+      currentExchange.answerText = parsed.answerText
+      currentExchange.followUps = parsed.followUps
+      currentExchange.sources = parsed.sources ?? []
+    }
   }
+
   return exchanges
 }

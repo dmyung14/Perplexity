@@ -23,7 +23,7 @@ export class AnswerStreamParser {
     const llmText = hasSentinel ? this.raw.slice(0, sentinelIndex) : this.raw
 
     const answerMatch = llmText.match(/<ANSWER>([\s\S]*?)(<\/ANSWER>|$)/)
-    const answerText = answerMatch ? answerMatch[1].trim() : ""
+    const answerText = answerMatch ? answerMatch[1].trim() : llmText.trim()
 
     const followUps: string[] = []
     const followUpsBlockMatch = llmText.match(/<FOLLOW_UPS>([\s\S]*?)<\/FOLLOW_UPS>/)
