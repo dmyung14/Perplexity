@@ -5,7 +5,7 @@ const supabase = createClient()
 export default function Auth() {
 
   async function login(provider: "google" | "github") {
-    const {data, error} = await supabase.auth.signInWithOAuth({
+    const {error} = await supabase.auth.signInWithOAuth({
       provider: provider
     });
 
