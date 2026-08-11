@@ -16,7 +16,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.post("/signup", async (req, res) => {
+app.post("/api/signup", async (req, res) => {
   const { email, provider, name } = req.body
 
   const user = await prisma.user.create({
@@ -26,7 +26,7 @@ app.post("/signup", async (req, res) => {
   res.json(user)
 })
 
-app.post("/signin", middleware, async (req, res) => {
+app.post("/api/signin", middleware, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.userId! }
   })
@@ -34,7 +34,7 @@ app.post("/signin", middleware, async (req, res) => {
   res.json(user)
 })
 
-app.get("/conversation", middleware, async (req, res) => {
+app.get("/api/conversation", middleware, async (req, res) => {
   const conversations = await prisma.conversation.findMany({
     where: { userId: req.userId! },
     select: { id: true, title: true, slug: true }
@@ -43,7 +43,7 @@ app.get("/conversation", middleware, async (req, res) => {
   res.json(conversations)
 })
 
-app.post("/conversation/:conversationId", middleware, async (req, res) => {
+app.post("/api/conversation/:conversationId", middleware, async (req, res) => {
   const conversationId = String(req.params.conversationId)
 
   const conversation = await prisma.conversation.findUnique({
@@ -59,7 +59,7 @@ app.post("/conversation/:conversationId", middleware, async (req, res) => {
   res.json(conversation)
 })
 
-app.post("/perplexity_ask", middleware, async (req, res) => {
+app.post("/api/perplexity_ask", middleware, async (req, res) => {
   res.header('Cache-Control', 'no-cache')
   res.header('Content-Type', 'text/event-stream')
 
@@ -104,7 +104,7 @@ app.post("/perplexity_ask", middleware, async (req, res) => {
   res.end()
 })
 
-app.post("/perplexity_ask/follow_up", middleware, async (req, res) => {
+app.post("/api/perplexity_ask/follow_up", middleware, async (req, res) => {
   res.header('Cache-Control', 'no-cache')
   res.header('Content-Type', 'text/event-stream')
 
